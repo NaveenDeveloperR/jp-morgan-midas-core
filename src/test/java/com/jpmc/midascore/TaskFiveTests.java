@@ -1,6 +1,9 @@
 package com.jpmc.midascore;
 
+import com.jpmc.midascore.component.DataInitializer;
 import com.jpmc.midascore.foundation.Balance;
+import com.jpmc.midascore.kafka.KafkaProducer;
+
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +21,6 @@ public class TaskFiveTests {
     @Autowired
     private KafkaProducer kafkaProducer;
 
-    @Autowired
-    private UserPopulator userPopulator;
 
     @Autowired
     private FileLoader fileLoader;
@@ -27,10 +28,13 @@ public class TaskFiveTests {
     @Autowired
     private BalanceQuerier balanceQuerier;
 
+    @Autowired  
+    private DataInitializer dataInitializer;
+
 
     @Test
     void task_five_verifier() throws InterruptedException {
-        userPopulator.populate();
+        dataInitializer.populateUsers();
         String[] transactionLines = fileLoader.loadStrings("/test_data/rueiwoqp.tyruei");
         for (String transactionLine : transactionLines) {
             kafkaProducer.send(transactionLine);

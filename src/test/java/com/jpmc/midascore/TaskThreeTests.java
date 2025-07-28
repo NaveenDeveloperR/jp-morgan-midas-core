@@ -1,5 +1,4 @@
 package com.jpmc.midascore;
-
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
+
+import com.jpmc.midascore.component.DataInitializer;
+import com.jpmc.midascore.kafka.KafkaProducer;
 
 @SpringBootTest
 @DirtiesContext
@@ -18,14 +20,14 @@ public class TaskThreeTests {
     private KafkaProducer kafkaProducer;
 
     @Autowired
-    private UserPopulator userPopulator;
+    private DataInitializer dataInitializer;
 
     @Autowired
     private FileLoader fileLoader;
 
     @Test
     void task_three_verifier() throws InterruptedException {
-        userPopulator.populate();
+        dataInitializer.populateUsers();
         String[] transactionLines = fileLoader.loadStrings("/test_data/mnbvcxz.vbnm");
         for (String transactionLine : transactionLines) {
             kafkaProducer.send(transactionLine);
